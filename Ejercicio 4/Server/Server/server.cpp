@@ -5,37 +5,36 @@
 #include <Windows.h>
 #include <string.h>
 #include <stdlib.h>
+#include <conio.h>
+#include <tchar.h>
+
 
 #define STRING_SIZE 1024
 
 using namespace std;
-/*
-struct Segmento {
-	bool serverFlag;
-	bool clientFlag;
-	char mensajeS[STRING_SIZE];
-	char mensajeC[STRING_SIZE];
-};
 
-Segmento *segmento;
-*/
-
-char *buf;
+LPCTSTR buf;
 HANDLE	mutex = INVALID_HANDLE_VALUE;
 int message;
 
+char text[STRING_SIZE];
+
 void read() {
 	while (true) {
+		::Sleep(9000);
+		cout << buf << endl;
 	}
 }
 
 void write() {
-	while (true) {
+	//while (true) {
 		WaitForSingleObject(mutex, INFINITE);
-		cout << ">: ";
-		cin
-		memset(buf, , STRING_SIZE);
-	}
+		cout << ":> ";
+		cin.getline(text, STRING_SIZE);
+		CopyMemory((PVOID)buf, text, STRING_SIZE);
+		_getch();
+		::ReleaseMutex(mutex);
+	//}
 }
 
 int main() {
@@ -52,14 +51,18 @@ int main() {
 		PAGE_READWRITE,
 		0,
 		STRING_SIZE,
-		"shared_memory_name"
+		"share_memory_comunication"
 	);
 
-	buf = (char*)::MapViewOfFile(shmem, FILE_MAP_ALL_ACCESS, 0, 0, STRING_SIZE);
+	buf = (LPTSTR)::MapViewOfFile(shmem, FILE_MAP_ALL_ACCESS, 0, 0, STRING_SIZE);
 
 	//Hilos
-	
 
+	thread writeM(write);
+	thread readM(read);
+	
+	writeM.join();
+	readM.join();
 
 	::UnmapViewOfFile(buf);
 	::CloseHandle(shmem);
