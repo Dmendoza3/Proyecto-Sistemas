@@ -1,8 +1,10 @@
 # Prerequisites
 *.d
+*.ilk
+*.pdb
+*.idb
+*.log
 
-/ejercicio4/Server/Debug
-/ejercicio4/Client/Debug
 # Compiled Object files
 *.slo
 *.lo
